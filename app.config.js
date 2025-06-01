@@ -1,0 +1,11 @@
+// app.config.js
+export default {
+  expo: {
+    name: "ai_recipe_generator",
+    slug: "ai_recipe_generator",
+    extra: {
+      STRAPI_API_KEY:
+        "b0183766a4f5045a1647d5f3149c387e43a8e040c3dde0a511bcabfd3e833b289f9fc3efbfab2b2b9e7a1e1fe5f4d68937077d0fc19eafe8bee0ed0c1eea00c2a1f908da684984c96456746975f74a6847d7e11397c35a71ec39b5b0804339e100e43dc5c4875fd103681e50b687d22855c115409193a024933ac71bbfe431eb",
+    },
+  },
+};
