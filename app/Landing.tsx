@@ -1,18 +1,70 @@
+import { UserContext } from "@/context/UserContext";
+import GlobalAPIs from "@/services/GlobalAPIs";
 import Colors from "@/utils/Colors";
 import { Marquee } from "@animatereactnative/marquee";
 import { useLogto } from "@logto/rn";
-import { useNavigation } from "expo-router";
-import React, { useEffect } from "react";
+import { useNavigation, useRouter } from "expo-router";
+import React, { useContext, useEffect } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Landing() {
   const { signIn, signOut, isAuthenticated, getIdTokenClaims } = useLogto();
   const navigation = useNavigation();
+  const router = useRouter();
+
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, []);
+
+  useEffect(() => {
+    const handleAuthenticatedUser = async () => {
+      console.log('handle auth called')
+      try {
+        const userData = await getIdTokenClaims();
+        console.log('userData ', userData)
+        if (!userData?.email) return;
+
+        const result = await GlobalAPIs.GetUserByEmail(userData?.email);
+        const existingUsers = result?.data?.data || [];
+
+        console.log('existingUsers :', existingUsers)
+
+        if (existingUsers.length === 0) {
+          const newUserPayload = {
+            email: userData.email,
+            name: userData.name,
+            picture: userData.picture,
+          };
+
+          const newUserResponse = await GlobalAPIs.CreateNewUser(
+            newUserPayload
+          );
+          const createdUser = newUserResponse?.data?.data;
+
+          if (newUserResponse?.status === 201 && createdUser) {
+            setUser(createdUser);
+            router.replace("/(tabs)/Home");
+          } else {
+            setUser(null);
+          }
+        } else {
+          setUser(existingUsers[0]);
+          router.replace("/(tabs)/Home");
+        }
+      } catch (error) {
+        console.log("Error fetching user data:", error);
+      }
+    };
+
+    console.log('isAuthenticated 1 :', isAuthenticated)
+    if (isAuthenticated) {
+      handleAuthenticatedUser();
+    }
+  }, [isAuthenticated]);
+
 
   const imageList = [
     require("./../assets/images/1.jpg"),
@@ -83,6 +135,7 @@ export default function Landing() {
         <TouchableOpacity
           style={styles.button}
           onPress={async () => signIn("exp://192.168.43.87:8081")}
+          // onPress={async () => router.push('/(tabs)/Home')}
         >
           <Text style={styles.buttonText}>Get Started.</Text>
         </TouchableOpacity>
