@@ -1,3 +1,4 @@
+import CreateRecipe from "@/components/CreateRecipe";
 import IntroHeader from "@/components/IntroHeader";
 import Colors from "@/utils/Colors";
 import React from "react";
@@ -8,12 +9,14 @@ export default function Home() {
     <View style={{
       height: '100%', 
       backgroundColor: Colors.WHITE,
-      padding: 30
+      paddingVertical: 35,
+      paddingHorizontal: 10
     }}>
       {/* Intro */}
       <IntroHeader/>
 
       {/* Recipe generator  */}
+      <CreateRecipe/>
 
       {/* Category */}
     </View>

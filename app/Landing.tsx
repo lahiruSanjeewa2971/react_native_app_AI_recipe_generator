@@ -21,16 +21,12 @@ export default function Landing() {
 
   useEffect(() => {
     const handleAuthenticatedUser = async () => {
-      console.log('handle auth called')
       try {
         const userData = await getIdTokenClaims();
-        console.log('userData ', userData)
         if (!userData?.email) return;
 
         const result = await GlobalAPIs.GetUserByEmail(userData?.email);
         const existingUsers = result?.data?.data || [];
-
-        console.log('existingUsers :', existingUsers)
 
         if (existingUsers.length === 0) {
           const newUserPayload = {
@@ -59,7 +55,6 @@ export default function Landing() {
       }
     };
 
-    console.log('isAuthenticated 1 :', isAuthenticated)
     if (isAuthenticated) {
       handleAuthenticatedUser();
     }
