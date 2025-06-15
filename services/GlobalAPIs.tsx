@@ -16,7 +16,10 @@ const GetUserByEmail = (email: string) =>
 const CreateNewUser = (data: any) =>
   axiosClient.post("/user-lists", { data: data });
 
+const GetCategoryList = () => axiosClient.get("/categories?populate=*");
+
 export default {
   GetUserByEmail,
-  CreateNewUser
+  CreateNewUser,
+  GetCategoryList,
 };

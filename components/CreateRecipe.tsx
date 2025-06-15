@@ -1,9 +1,11 @@
 import Colors from "@/utils/Colors";
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import Button from "./Button";
 
 export default function CreateRecipe() {
+  const [userInput, setUserInput] = useState<string>();
+
   return (
     <View style={styles.mainContainer}>
       <Image
@@ -20,9 +22,14 @@ export default function CreateRecipe() {
         placeholder="What you want to create? Add ingredients etc."
         multiline={true}
         numberOfLines={3}
+        onChangeText={(value) => setUserInput(value)}
       />
 
-      <Button label={"Generate Recipe"} onPress={() => console.log('object')} iconName={'sparkles'} />
+      <Button
+        label={"Generate Recipe"}
+        onPress={() => console.log("object")}
+        iconName={"sparkles"}
+      />
     </View>
   );
 }
