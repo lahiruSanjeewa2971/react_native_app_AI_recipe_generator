@@ -1,10 +1,33 @@
+import GlobalAPIs from "@/services/GlobalAPIs";
 import Colors from "@/utils/Colors";
-import React, { useState } from "react";
-import { Image, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { Alert, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
+import GENERATE_RECIPE_OPTION_PROMPT from "./../services/Prompts";
 import Button from "./Button";
 
 export default function CreateRecipe() {
   const [userInput, setUserInput] = useState<string>();
+  const [recipeOptions, setRecipeOptions] = useState();
+  const [loadingGenerateButton, setLoadingGenerateButton] = useState(false);
+  const actionSheet = useRef<ActionSheetRef>(null)
+
+  const onGenerate = async () => {
+    console.log('1')
+    if (!userInput) {
+      Alert.alert("Please enter details");
+      return;
+    }
+    
+    console.log('2')
+    setLoadingGenerateButton(true)
+    const result = await GlobalAPIs.AIModel(
+      userInput + GENERATE_RECIPE_OPTION_PROMPT
+    );
+    setLoadingGenerateButton(false)
+
+    console.log("result :", result?.choices[0].message);
+  };
 
   return (
     <View style={styles.mainContainer}>
@@ -27,9 +50,14 @@ export default function CreateRecipe() {
 
       <Button
         label={"Generate Recipe"}
-        onPress={() => console.log("object")}
+        onPress={() => onGenerate()}
         iconName={"sparkles"}
+        loading={loadingGenerateButton}
       />
+
+      <ActionSheet ref={actionSheet}>
+        <Text>Hi I'm here</Text>
+      </ActionSheet>
     </View>
   );
 }
